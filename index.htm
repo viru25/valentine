@@ -29,16 +29,36 @@
             width: 360px;
         }
 
+        .card-hearts {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 28px;
+            pointer-events: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 10px 14px 0;
+        }
+
+        .card-hearts span {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
         h1 {
             color: #e63946;
             margin-bottom: 40px;
         }
 
         .buttons {
+            position: relative;
+            height: 70px;
             display: flex;
             justify-content: center;
-            gap: 20px;
-            position: relative;
+            align-items: center;
+            gap: 24px;
         }
 
         button {
@@ -53,39 +73,89 @@
         #yesBtn {
             background: #e63946;
             color: white;
+            z-index: 1;
+            margin-right: 24px;
+            box-shadow: 0 2px 12px rgba(230, 57, 70, 0.4);
         }
 
         #yesBtn:hover {
             transform: scale(1.1);
+            box-shadow: 0 4px 18px rgba(230, 57, 70, 0.5);
         }
 
         #noBtn {
-            background: #f1f1f1;
-            color: #333;
+            background: #fce4ec;
+            color: #c2185b;
             position: absolute;
+            z-index: 1;
+            box-shadow: 0 2px 12px rgba(194, 24, 91, 0.25);
+            border: 1px solid rgba(230, 57, 70, 0.2);
+        }
+
+        #noBtn:hover {
+            box-shadow: 0 4px 16px rgba(194, 24, 91, 0.35);
         }
 
         /* Modal */
         .modal {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.4);
+            z-index: 1000;
+            background: rgba(255, 182, 193, 0.5);
             display: none;
             align-items: center;
             justify-content: center;
         }
 
         .modal-content {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
+            background: #fff5f7;
+            padding: 44px 36px;
+            border-radius: 28px;
             text-align: center;
+            width: 90%;
+            max-width: 420px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
             animation: pop 0.4s ease;
+        }
+
+        .modal-ring {
+            font-size: 48px;
+            margin-bottom: 12px;
+            line-height: 1;
         }
 
         .modal-content h2 {
             color: #e63946;
-            margin-bottom: 10px;
+            margin: 0 0 16px;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .modal-content .modal-text {
+            font-size: 16px;
+            line-height: 1.7;
+            color: #333;
+            margin: 0 0 10px;
+        }
+
+        .modal-content .modal-cta {
+            display: block;
+            margin: 24px auto 0;
+            padding: 14px 32px;
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            background: linear-gradient(180deg, #e63946, #ff9a9e);
+            box-shadow: 0 4px 15px rgba(230, 57, 70, 0.35);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .modal-content .modal-cta:hover {
+            transform: scale(1.03);
+            box-shadow: 0 6px 20px rgba(230, 57, 70, 0.4);
         }
 
         @keyframes pop {
@@ -141,7 +211,12 @@
 <body>
 
     <div class="card">
-        <h1>Will you be my<br>forever Valentine? 💖</h1>
+        <div class="card-hearts">
+            <span>💕</span>
+            <span>💖</span>
+            <span>💕</span>
+        </div>
+        <h1>Will you be my<br>forever Valentine? Usha 💖</h1>
 
         <div class="buttons">
             <button id="yesBtn">Yes 💕</button>
@@ -152,9 +227,11 @@
     <!-- Modal -->
     <div class="modal" id="modal">
         <div class="modal-content">
-            <h2>Best Decision Ever 💍</h2>
-            <p>You just made me the happiest person alive ❤️</p>
-            <p>Happy Valentine’s Day, my forever 💖</p>
+            <div class="modal-ring">💍</div>
+            <h2>Best Decision Ever!</h2>
+            <p class="modal-text">You just made me the happiest person alive ❤️</p>
+            <p class="modal-text">Happy Valentine's Day, my forever 💕</p>
+            <button class="modal-cta" id="foreverBtn">Forever & Always 💕💕</button>
         </div>
     </div>
 
@@ -164,21 +241,30 @@
         const modal = document.getElementById("modal");
 
         function moveNoButton() {
-            const card = document.querySelector(".card");
-            const cardRect = card.getBoundingClientRect();
+            const container = document.querySelector(".buttons");
+            const rect = container.getBoundingClientRect();
 
-            const x = Math.random() * (cardRect.width - 100);
-            const y = Math.random() * (cardRect.height - 50);
+            const maxX = rect.width - noBtn.offsetWidth;
+            const maxY = rect.height - noBtn.offsetHeight;
 
-            noBtn.style.left = x + "px";
-            noBtn.style.top = y + "px";
+            const x = Math.random() * maxX;
+            const y = Math.random() * maxY;
+
+            noBtn.style.left = `${x}px`;
+            noBtn.style.top = `${y}px`;
         }
 
-        noBtn.addEventListener("mouseenter", moveNoButton);
-        noBtn.addEventListener("click", moveNoButton);
+        // noBtn.addEventListener("mouseenter", moveNoButton);
+        // noBtn.addEventListener("click", moveNoButton);
+        noBtn.addEventListener("touchstart", moveNoButton);
+        noBtn.addEventListener("mouseover", moveNoButton);
 
         yesBtn.addEventListener("click", () => {
             modal.style.display = "flex";
+        });
+
+        document.getElementById("foreverBtn").addEventListener("click", () => {
+            modal.style.display = "none";
         });
 
         function createHeart() {
