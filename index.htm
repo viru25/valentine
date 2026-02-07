@@ -1,329 +1,554 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8" />
-    <title>Forever Valentine 💖</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Be My Valentine? 💖</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --valentine-red: hsl(350, 80%, 50%);
+            --valentine-pink: hsl(350, 100%, 92%);
+            --valentine-rose: hsl(350, 60%, 70%);
+            --valentine-blush: hsl(350, 80%, 96%);
+            --valentine-gold: hsl(35, 80%, 55%);
+            --background: hsl(350, 100%, 95%);
+            --foreground: hsl(350, 30%, 20%);
+            --card-bg: hsl(0, 0%, 100%);
+            --muted: hsl(350, 30%, 90%);
+            --muted-foreground: hsl(350, 20%, 50%);
+        }
         * {
-            box-sizing: border-box;
-            font-family: 'Segoe UI', sans-serif;
-        }
-
-        body {
-            height: 100vh;
             margin: 0;
-            background: linear-gradient(135deg, #ffdde1, #ee9ca7);
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--valentine-pink) 0%, var(--valentine-rose) 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-
-        .card {
-            background: white;
-            padding: 50px 40px;
-            border-radius: 20px;
-            text-align: center;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
             position: relative;
-            width: 760px;
-            height: 360px;
         }
-
-        .card-hearts {
+        /* Ambient glow effects */
+        .glow-1, .glow-2, .glow-3 {
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 28px;
+            border-radius: 50%;
+            filter: blur(60px);
             pointer-events: none;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            padding: 10px 14px 0;
+            z-index: 0;
         }
-
-        .card-hearts span {
-            font-size: 24px;
-            opacity: 0.9;
+        .glow-1 {
+            top: 25%;
+            left: 25%;
+            width: 16rem;
+            height: 16rem;
+            background: hsla(350, 60%, 70%, 0.3);
         }
-
-        h1 {
-            color: #e63946;
-            margin-bottom: 40px;
+        .glow-2 {
+            bottom: 25%;
+            right: 25%;
+            width: 24rem;
+            height: 24rem;
+            background: hsla(350, 100%, 92%, 0.4);
         }
-
-        .buttons {
-            position: relative;
-            height: 70px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 24px;
+        .glow-3 {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 31rem;
+            height: 31rem;
+            background: hsla(350, 80%, 96%, 0.5);
         }
-
-        button {
-            padding: 12px 26px;
-            font-size: 16px;
-            border-radius: 30px;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        #yesBtn {
-            background: #e63946;
-            color: white;
-            z-index: 1;
-            margin-right: 24px;
-            box-shadow: 0 2px 12px rgba(230, 57, 70, 0.4);
-        }
-
-        #yesBtn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 4px 18px rgba(230, 57, 70, 0.5);
-        }
-
-        #noBtn {
-            background: #fce4ec;
-            color: #c2185b;
-            position: absolute;
-            z-index: 1;
-            box-shadow: 0 2px 12px rgba(194, 24, 91, 0.25);
-            border: 1px solid rgba(230, 57, 70, 0.2);
-        }
-
-        #noBtn:hover {
-            box-shadow: 0 4px 16px rgba(194, 24, 91, 0.35);
-        }
-
-        /* Modal */
-        .modal {
+        /* Floating hearts container */
+        .hearts-container {
             position: fixed;
             inset: 0;
-            z-index: 1000;
-            background: rgba(255, 182, 193, 0.5);
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+        .floating-heart {
+            position: absolute;
+            bottom: -50px;
+            animation: floatUp linear forwards;
+            opacity: 0.9;
+        }
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) rotate(0deg) scale(1);
+                opacity: 0.9;
+            }
+            100% {
+                transform: translateY(-110vh) rotate(360deg) scale(0.5);
+                opacity: 0;
+            }
+        }
+        /* Card styles */
+        .card {
+            background: linear-gradient(180deg, var(--card-bg) 0%, hsl(350, 50%, 98%) 100%);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            width: 90vw;
+            max-width: 28rem;
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 25px 50px -12px hsla(350, 80%, 50%, 0.25);
+            border: 1px solid hsla(350, 100%, 92%, 0.5);
+            backdrop-filter: blur(10px);
+            animation: cardEntrance 0.6s ease-out;
+        }
+        @keyframes cardEntrance {
+            0% {
+                opacity: 0;
+                transform: scale(0.8) translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        /* Decorative elements */
+        .decor-heart {
+            position: absolute;
+            font-size: 1.75rem;
+            animation: wiggle 2s ease-in-out infinite;
+        }
+        .decor-heart.top-left {
+            top: -1rem;
+            left: -1rem;
+        }
+        .decor-heart.top-right {
+            top: -1rem;
+            right: -1rem;
+            animation-delay: 0.2s;
+        }
+        .decor-rose {
+            position: absolute;
+            bottom: -1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.75rem;
+        }
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+        }
+        /* Card content */
+        .card-content {
+            text-align: center;
+        }
+        h1 {
+            font-family: 'Playfair Display', serif;
+            color: var(--valentine-red);
+            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+            line-height: 1.3;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        h1.name-title {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            background: linear-gradient(135deg, var(--valentine-red) 0%, var(--valentine-rose) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        h1.main-title {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        /* Buttons container */
+        .buttons-container {
+            position: relative;
+            height: 6rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        /* Yes button */
+        .yes-btn {
+            background: linear-gradient(135deg, hsl(350, 80%, 55%) 0%, hsl(350, 80%, 45%) 100%);
+            color: white;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 0.875rem 2.5rem;
+            border: none;
+            border-radius: 9999px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px -10px hsla(350, 80%, 50%, 0.5);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            z-index: 10;
+            animation: pulseGlow 2s ease-in-out infinite;
+        }
+        .yes-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 40px -10px hsla(350, 80%, 50%, 0.6);
+        }
+        .yes-btn:active {
+            transform: scale(0.95);
+        }
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 10px 30px -10px hsla(350, 80%, 50%, 0.5); }
+            50% { box-shadow: 0 10px 40px -5px hsla(350, 80%, 50%, 0.7); }
+        }
+        /* No button */
+        .no-btn {
+            position: absolute;
+            background: var(--muted);
+            color: var(--muted-foreground);
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: 1rem;
+            padding: 0.875rem 2rem;
+            border: none;
+            border-radius: 9999px;
+            cursor: pointer;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s ease;
+            z-index: 20;
+        }
+        .no-btn:hover {
+            background: hsla(350, 30%, 90%, 0.8);
+        }
+        /* Sparkle effects */
+        .sparkles {
+            position: absolute;
+            inset: 0;
+            border-radius: 1.5rem;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        .sparkle {
+            position: absolute;
+            width: 0.5rem;
+            height: 0.5rem;
+            background: var(--valentine-gold);
+            border-radius: 50%;
+            animation: sparkle 2s ease-in-out infinite;
+        }
+        .sparkle:nth-child(1) {
+            top: 25%;
+            left: 25%;
+            opacity: 0.6;
+        }
+        .sparkle:nth-child(2) {
+            top: 33%;
+            right: 25%;
+            width: 0.375rem;
+            height: 0.375rem;
+            opacity: 0.4;
+            animation-delay: 0.5s;
+        }
+        .sparkle:nth-child(3) {
+            bottom: 33%;
+            left: 33%;
+            opacity: 0.5;
+            animation-delay: 1s;
+        }
+        @keyframes sparkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.2); }
+        }
+        /* Modal styles */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: hsla(350, 30%, 20%, 0.4);
+            backdrop-filter: blur(4px);
             display: none;
             align-items: center;
             justify-content: center;
-            background-color: #ffdde1;
-            
+            z-index: 50;
+            padding: 1rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
-
-        .modal-content {
-            background: #fff5f7;
-            padding: 44px 36px;
-            border-radius: 28px;
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+        .modal {
+            background: linear-gradient(180deg, var(--card-bg) 0%, hsl(350, 50%, 98%) 100%);
+            border-radius: 1.5rem;
+            padding: 2rem 3rem;
+            width: 100%;
+            max-width: 28rem;
             text-align: center;
-            width: 90%;
-            max-width: 720px;
-            min-height: 320px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
-            animation: pop 0.4s ease;
+            box-shadow: 0 25px 50px -12px hsla(350, 80%, 50%, 0.25);
+            position: relative;
+            overflow: hidden;
+            transform: scale(0.5) translateY(50px);
+            opacity: 0;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
         }
-
-        .modal-ring {
-            font-size: 48px;
-            margin-bottom: 12px;
-            line-height: 1;
+        .modal-overlay.active .modal {
+            transform: scale(1) translateY(0);
+            opacity: 1;
         }
-
-        .modal-content h2 {
-            color: #e63946;
-            margin: 0 0 16px;
-            font-size: 28px;
-            font-weight: bold;
+        .modal-glow {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, hsla(350, 100%, 92%, 0.5) 0%, transparent 50%, hsla(350, 60%, 70%, 0.3) 100%);
+            pointer-events: none;
         }
-
-        .modal-content .modal-text {
-            font-size: 24px;
-            line-height: 1.7;
-            color: #333;
-            margin: 0 0 10px;
+        .modal-content {
+            position: relative;
+            z-index: 10;
         }
-
-        .modal-content .modal-cta {
-            display: block;
-            margin: 24px auto 0;
-            padding: 14px 32px;
-            font-size: 24px;
-            font-weight: 600;
+        .modal-emoji {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+            animation: bounceIn 0.6s ease-out 0.2s both;
+        }
+        @keyframes bounceIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        .modal h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--valentine-red);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            animation: fadeInUp 0.5s ease-out 0.3s both;
+        }
+        .modal p {
+            color: hsla(350, 30%, 20%, 0.8);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 0.5rem;
+            animation: fadeInUp 0.5s ease-out 0.4s both;
+        }
+        .modal p:last-of-type {
+            animation-delay: 0.5s;
+        }
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .modal-btn {
+            margin-top: 2rem;
+            background: linear-gradient(135deg, hsl(350, 80%, 55%) 0%, hsl(350, 80%, 45%) 100%);
             color: white;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 0.875rem 2rem;
             border: none;
-            border-radius: 30px;
+            border-radius: 9999px;
             cursor: pointer;
-            background: linear-gradient(180deg, #e63946, #ff9a9e);
-            box-shadow: 0 4px 15px rgba(230, 57, 70, 0.35);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 10px 30px -10px hsla(350, 80%, 50%, 0.5);
+            transition: transform 0.2s ease;
+            animation: fadeInUp 0.5s ease-out 0.6s both;
         }
-
-        .modal-content .modal-cta:hover {
-            transform: scale(1.03);
-            box-shadow: 0 6px 20px rgba(230, 57, 70, 0.4);
+        .modal-btn:hover {
+            transform: scale(1.05);
         }
-
-        @keyframes pop {
-            0% {
-                transform: scale(0.7);
-                opacity: 0;
-            }
-
-            100% {
-                transform: scale(1);
-                opacity: 1;
-            }
+        .modal-btn:active {
+            transform: scale(0.95);
         }
-
-        @media (max-width: 800px) {
-            .card {
-                width: 94%;
-                max-width: 580px;
-                padding: 42px 28px 48px;
-                min-height: 280px;
-            }
-
-            h1 {
-                font-size: 24px;
-                margin-bottom: 36px;
-            }
-
-            button {
-                font-size: 17px;
-                padding: 14px 28px;
-            }
-
-            /* Best Decision modal – larger width and height on mobile */
-            .modal-content {
-                width: 94%;
-                max-width: none;
-                min-height: 420px;
-                padding: 56px 32px 60px;
-                border-radius: 28px;
-            }
-
-            .modal-ring {
-                font-size: 64px;
-                margin-bottom: 18px;
-            }
-
-            .modal-content h2 {
-                font-size: 34px;
-                margin-bottom: 22px;
-            }
-
-            .modal-content .modal-text {
-                font-size: 20px;
-                line-height: 1.8;
-                margin-bottom: 14px;
-            }
-
-            .modal-content .modal-cta {
-                font-size: 22px;
-                padding: 18px 40px;
-                margin-top: 32px;
-            }
+        .modal-heart {
+            position: absolute;
+            font-size: 1.75rem;
+            animation: floatHeart 2s ease-in-out infinite;
         }
-
-        .heart {
+        .modal-heart.left {
+            top: -0.75rem;
+            left: -0.75rem;
+        }
+        .modal-heart.right {
+            top: -0.75rem;
+            right: -0.75rem;
+            animation-delay: 0.3s;
+        }
+        @keyframes floatHeart {
+            0%, 100% { transform: translateY(0) rotate(-5deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+        }
+        /* Confetti */
+        .confetti {
             position: fixed;
-            bottom: -20px;
-            font-size: 20px;
-            animation: floatUp 6s linear infinite;
-            opacity: 0.8;
+            top: -50px;
+            font-size: 1.5rem;
+            pointer-events: none;
+            animation: confettiFall linear forwards;
         }
-
-        @keyframes floatUp {
-            0% {
-                transform: translateY(0) scale(1);
-                opacity: 2;
+        @keyframes confettiFall {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+        /* Responsive */
+        @media (min-width: 640px) {
+            .card {
+                padding: 3rem;
             }
-
-            100% {
-                transform: translateY(-110vh) scale(1.5);
-                opacity: 1;
+            h1 {
+                font-size: 1.875rem;
+            }
+            h1.main-title {
+                font-size: 2.25rem;
+            }
+            .decor-heart {
+                font-size: 2rem;
+            }
+            .buttons-container {
+                height: 7rem;
+            }
+            .yes-btn {
+                font-size: 1.125rem;
+                padding: 1rem 2.5rem;
+            }
+            .no-btn {
+                font-size: 1.125rem;
+                padding: 1rem 2rem;
+            }
+            .modal {
+                padding: 3rem;
+            }
+            .modal-emoji {
+                font-size: 4.5rem;
+            }
+            .modal h2 {
+                font-size: 1.875rem;
+            }
+            .modal p {
+                font-size: 1.125rem;
             }
         }
     </style>
 </head>
-
 <body>
-
+    <!-- Ambient glows -->
+    <div class="glow-1"></div>
+    <div class="glow-2"></div>
+    <div class="glow-3"></div>
+    <!-- Floating hearts -->
+    <div class="hearts-container" id="heartsContainer"></div>
+    <!-- Main card -->
     <div class="card">
-        <div class="card-hearts">
-            <span>💕</span>
-            <span>💖</span>
-            <span>💕</span>
+        <div class="decor-heart top-left">💕</div>
+        <div class="decor-heart top-right">💕</div>
+        <div class="decor-rose">🌹</div>
+        <div class="card-content">
+            <h1>Will you be my</h1>
+            <h1 class="main-title">forever Valentine? 💖</h1>
+            <h1 class="name-title">Usha</h1>
+            <div class="buttons-container" id="buttonsContainer">
+                <button class="yes-btn" id="yesBtn">Yes 💕</button>
+                <button class="no-btn" id="noBtn">No 🙃</button>
+            </div>
         </div>
-        <h1>Will you be my<br>forever Valentine? 
-            <br> Usha 💖</h1>
-
-        <div class="buttons">
-            <button id="yesBtn">Yes 💕</button>
-            <button id="noBtn">No 🙃</button>
-        </div>
-    </div>
-
-    <!-- Modal -->
-    <div class="modal" id="modal">
-        <div class="modal-content">
-            <div class="modal-ring">💍</div>
-            <h2>Best Decision Ever!</h2>
-            <p class="modal-text">You just made me the happiest person alive ❤️</p>
-            <p class="modal-text">Happy Valentine's Day, my forever 💕</p>
-            <button class="modal-cta" id="foreverBtn">Forever & Always 💕💕</button>
+        <div class="sparkles">
+            <div class="sparkle"></div>
+            <div class="sparkle"></div>
+            <div class="sparkle"></div>
         </div>
     </div>
-
+    <!-- Success Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal-glow"></div>
+            <div class="modal-heart left">💗</div>
+            <div class="modal-heart right">💗</div>
+            <div class="modal-content">
+                <div class="modal-emoji">💍</div>
+                <h2>Best Decision Ever!</h2>
+                <p>You just made me the happiest person alive ❤️</p>
+                <p>Happy Valentine's Day, my forever 💖</p>
+                <button class="modal-btn" id="modalBtn">Forever & Always 💕</button>
+            </div>
+        </div>
+    </div>
     <script>
-        const noBtn = document.getElementById("noBtn");
-        const yesBtn = document.getElementById("yesBtn");
-        const modal = document.getElementById("modal");
-
+        // Elements
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const modalOverlay = document.getElementById('modalOverlay');
+        const modalBtn = document.getElementById('modalBtn');
+        const buttonsContainer = document.getElementById('buttonsContainer');
+        const heartsContainer = document.getElementById('heartsContainer');
+        // Emojis for floating hearts
+        const heartEmojis = ['💖', '💕', '💗', '💓', '💘', '💝', '❤️', '🌹'];
+        const confettiEmojis = ['💖', '💕', '💗', '✨', '💘', '🎉', '💝', '🌹', '💐'];
+        // Move No button away
         function moveNoButton() {
-            const container = document.querySelector(".buttons");
-            const rect = container.getBoundingClientRect();
-
-            const maxX = rect.width - noBtn.offsetWidth;
-            const maxY = rect.height - noBtn.offsetHeight;
-
-            const x = Math.random() * maxX;
-            const y = Math.random() * maxY;
-
-            noBtn.style.left = `${x}px`;
-            noBtn.style.top = `${y}px`;
+            const containerRect = buttonsContainer.getBoundingClientRect();
+            const btnRect = noBtn.getBoundingClientRect();
+            const maxX = containerRect.width - btnRect.width - 20;
+            const maxY = containerRect.height - btnRect.height - 10;
+            const newX = Math.random() * maxX - maxX / 2;
+            const newY = Math.random() * maxY - maxY / 2;
+            noBtn.style.transform = `translate(${newX}px, ${newY}px)`;
         }
-
-        // noBtn.addEventListener("mouseenter", moveNoButton);
-        // noBtn.addEventListener("click", moveNoButton);
-        noBtn.addEventListener("touchstart", moveNoButton);
-        noBtn.addEventListener("mouseover", moveNoButton);
-
-        yesBtn.addEventListener("click", () => {
-            modal.style.display = "flex";
-        });
-
-        document.getElementById("foreverBtn").addEventListener("click", () => {
-            modal.style.display = "none";
-        });
-
-        function createHeart() {
-            const heart = document.createElement("div");
-            heart.classList.add("heart");
-            heart.innerText = "💖";
-
-            heart.style.left = Math.random() * 100 + "vw";
-            heart.style.animationDuration = 4 + Math.random() * 3 + "s";
-
-            document.body.appendChild(heart);
-
+        // Create floating heart
+        function createFloatingHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'floating-heart';
+            heart.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.fontSize = (16 + Math.random() * 20) + 'px';
+            heart.style.animationDuration = (5 + Math.random() * 4) + 's';
+            heartsContainer.appendChild(heart);
             setTimeout(() => {
                 heart.remove();
-            }, 7000);
+            }, 9000);
         }
-
-        setInterval(createHeart, 500);
+        // Create confetti
+        function createConfetti() {
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.textContent = confettiEmojis[Math.floor(Math.random() * confettiEmojis.length)];
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.animationDuration = (2.5 + Math.random() * 1) + 's';
+                    document.body.appendChild(confetti);
+                    setTimeout(() => {
+                        confetti.remove();
+                    }, 3500);
+                }, i * 50);
+            }
+        }
+        // Show modal
+        function showModal() {
+            modalOverlay.classList.add('active');
+            createConfetti();
+        }
+        // Hide modal
+        function hideModal() {
+            modalOverlay.classList.remove('active');
+        }
+        // Event listeners
+        noBtn.addEventListener('mouseenter', moveNoButton);
+        noBtn.addEventListener('touchstart', moveNoButton, { passive: true });
+        yesBtn.addEventListener('click', showModal);
+        
+        modalBtn.addEventListener('click', hideModal);
+        
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) {
+                hideModal();
+            }
+        });
+        // Start floating hearts
+        setInterval(createFloatingHeart, 600);
+        // Create initial hearts
+        for (let i = 0; i < 5; i++) {
+            setTimeout(createFloatingHeart, i * 200);
+        }
     </script>
-
 </body>
-
 </html>
